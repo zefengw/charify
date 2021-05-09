@@ -1,5 +1,5 @@
 <?php include "includes/header.php";?>
-<?php include "includes/db.php";?>
+<?php include "includes/functions.php";?>
 
     <body>
         <!-- Navigation-->
@@ -25,7 +25,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-xl-9 mx-auto"><h1 class="mb-5">Charify</h1></div>
-                    <div class="col-xl-9 mx-auto"><h3 class="mb-5">13,000 of Canada's Charities based on the Percentage of Revenue used to Support their Mission</h3></div>
+                    <div class="col-xl-9 mx-auto"><h3 class="mb-5">13,000 of Canada's Charities based on the Percentage of Revenue going to supporting their Mission</h3></div>
                     <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
                         <form method="post" action="./search.php">
                             <div class="form-row">
@@ -45,12 +45,56 @@
                 </div>
             </div>
         </header>
-<?php include "includes/table.php";?>
+        <div id="page-content-wrapper">
 
-        <!-- Bootstrap core JS-->
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Core theme JS-->
-        <script src="js/scripts.js"></script>
-    </body>
-</html>
+<table class="table table-bordered table-hover">
+        <thead>
+          <tr>
+          <th>Result</th>
+          <th>Name</th>
+          <th>Link</th>
+          <th>Percentage</th>
+        </tr>
+        </thead>
+
+<tbody>
+<?php
+if(isset($_POST['search_submit'])){
+    if(!empty($_POST['search_input']) && !empty($_POST['select'])){
+        $search_input = $_POST['search_input'];
+        $search = $_POST['select'];
+        switch($search){
+            case "name":
+                $query = "SELECT * FROM charity WHERE name LIKE '%$search_input%' ";
+                $search_query_name = mysqli_query($connection, $query);
+                confirm($search_query_name);
+                search_query($search_query_name);
+            break;
+            case "link":
+                $query = "SELECT * FROM charity WHERE link LIKE '%$search_input%' ";
+                $search_query_link = mysqli_query($connection, $query);
+                confirm($search_query_link);
+                search_query($search_query_link);
+            break;
+            case "percentage":
+                $query = "SELECT * FROM charity WHERE percentage LIKE '%$search_input%' ";
+                $search_query_percent = mysqli_query($connection, $query);
+                confirm($search_query_percent);
+                search_query($search_query_percent);
+            break;
+        }
+    }else{
+        if(empty($_POST['search_input'])){
+            echo "<h3 class='text-center'>Please Input Something</h3>";
+        }else{
+            echo "<h3 class='text-center'>Please Select a Category</h3>";
+        }
+    }
+
+}
+
+?>
+
+</tbody>
+</table>
+    </div>
